@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+ <title>Things to Code</title>
+ <link href="http://www.thingstocode.com/atom.xml" rel="self"/>
+ <link href="http://www.thingstocode.com/"/>
+ <updated>2014-10-17T23:33:12+03:00</updated>
+ <id>http://www.thingstocode.com</id>
+ <author>
+   <name>Tolga Onbay</name>
+   <email></email>
+ </author>
+
+ 
+ <entry>
+   <title>Null Object Pattern</title>
+   <link href="http://www.thingstocode.com/2014/06/null-object-pattern/"/>
+   <updated>2014-06-10T00:00:00+03:00</updated>
+   <id>http://www.thingstocode.com/2014/06/null-object-pattern</id>
+   <content type="html">&lt;p&gt;A couple of months ago I needed to write a logging mechanism where logs weren&amp;#39;t
+always necessary to be persisted and log objects had to be transferred between
+methods, so each method assigns some specific attributes of the log object
+before being persisted. I know the latter seems like a terrible design, but not
+everybody can work on a state-of-the-art system like some lucky guys do!&lt;/p&gt;
+
+&lt;p&gt;You can get a feeling of the log class below:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AuditLog&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;save&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;//Persist to database&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Standard procedure is of course passing null reference to the methods when
+there is no need to log and afterwards checking if the object is not null, so
+you can invoke its methods without getting a null reference exception.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;TransactionHandler&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;handle&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Transaction&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;transaction&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;AuditLog&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;log&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;setId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;AuditLog&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;log&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;save&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;If you are an Objective-C programmer, then you are lucky, you don&amp;#39;t need to
+worry about checking if the object is null. But if you are using a mainstream
+object oriented programming language like me, you need to keep in mind that the
+objects can be null.&lt;/p&gt;
+
+&lt;p&gt;When you need to check null reference multiple times in more than a
+few methods, then your code is going to start smelling. You should start
+thinking about something else. Null Object Pattern can be your way out.&lt;/p&gt;
+
+&lt;h2&gt;Null Object Pattern&lt;/h2&gt;
+
+&lt;p&gt;Null Object Pattern is actually a special form of &lt;a href=&quot;http://martinfowler.com/eaaCatalog/specialCase.html&quot;&gt;Special
+Case&lt;/a&gt; pattern. It gives a
+null meaning to your object and prevents getting null reference error and the
+best part is: invoking its methods does nothing and there&amp;#39;s no need to check if
+it is null. It will cost you a method call instead of an if statement, but you
+will get a cleaner code.&lt;/p&gt;
+
+&lt;p&gt;Let&amp;#39;s get back to the design. We can transform the AuditLog class to use the
+Null Object pattern like below.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://www.thingstocode.com/assets/2014/04/nullobjectpattern.png&quot; alt=&quot;null object pattern&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;The code will simply be changed to:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AuditLog&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;save&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AuditLogImpl&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;implements&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;AuditLog&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;save&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;//Persist to database&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;NullAuditLog&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;implements&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;AuditLog&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;//Do nothing&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;save&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;//Do nothing&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Invoking the save method with a NullAuditLog instance will do nothing and you
+don&amp;#39;t need to add a null reference check anymore.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;TransactionHandler&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;handle&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Transaction&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;transaction&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;AuditLog&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;setId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;AuditLog&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;save&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Actually using an interface is the optimal usage. But in my design, I simply
+extended AuditLog class as NullAuditLog and made it a private static
+class inside of the AuditLog class. With this way null instance may have been
+retrieved from the NULL constant defined in AuditLog class. You can have a look
+at it on
+&lt;a href=&quot;https://github.com/tolgaonbay/examples/blob/master/src/com/thingstocode/examples/nullobject/AuditLog.java&quot;&gt;github&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;There are some downsides of this usage, like when you add new methods to the
+class, you should remember to add them into your null class. With an interface
+it is clearer to add method definitions into your interface and implement them
+in the derived classes.&lt;/p&gt;
+
+&lt;h2&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Even if it came out because of a &lt;a href=&quot;http://www.infoq.com/presentations/Null-References-The-Billion-Dollar-Mistake-Tony-Hoare&quot;&gt;billion dollar
+mistake&lt;/a&gt;,
+Null Object Pattern is very handy and makes your code clean. This doesn&amp;#39;t mean
+that you should apply Null Object Pattern to every single class in your design
+- it can make things even more complicated and error-prone. It may be
+used when:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;  It is possible to have a null reference and assigning null reference has a
+meaning in the design. For example we used it to not persist a log into the
+database&lt;/li&gt;
+&lt;li&gt;  There are many null comparisons for the object across the system&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Take a look at the Special Case pattern if you didn&amp;#39;t before. I&amp;#39;m sure you will
+find it very useful.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Source Code for MS-DOS and Word for Windows</title>
+   <link href="http://www.thingstocode.com/2014/03/source-code-ms-dos-word-windows/"/>
+   <updated>2014-03-30T00:00:00+02:00</updated>
+   <id>http://www.thingstocode.com/2014/03/source-code-ms-dos-word-windows</id>
+   <content type="html">&lt;p&gt;&lt;a href=&quot;http://blogs.technet.com/b/microsoft_blog/archive/2014/03/25/microsoft-makes-source-code-for-ms-dos-and-word-for-windows-available-to-public.aspx&quot;&gt;Microsoft released source code for MS-DOS and Word for
+Windows&lt;/a&gt; this
+week with the Computer History Museum.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;On Tuesday, we dusted off the source code for early versions of MS-DOS and
+Word for Windows. With the help of the Computer History Museum, we are making
+this code available to the public for the first time.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Without reading the whole press release, you might think of it as Microsoft&amp;#39;s
+new move towards getting into the open source community. Actually the intent is
+good, but it&amp;#39;s not making them open source:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Thanks to the Computer History Museum, these important pieces of source code
+will be preserved and made available to the community for historical and
+technical scholarship.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;As I said the intent is good, but this effort might have been more meaningful
+maybe 15 years ago. People could have learned many things from their work and
+they could have used them in their fields. Who knows, maybe we would have had
+better word processors by now.&lt;/p&gt;
+
+&lt;p&gt;Of course, this is about their marketing strategy, and I don&amp;#39;t blame them for
+this. I don&amp;#39;t really think they are evil. They have some &lt;a href=&quot;http://www.microsoft.com/en-us/openness/&quot;&gt;good
+efforts&lt;/a&gt;. Besides &lt;a href=&quot;http://www.hanselman.com/blog/MicrosoftKilledMyPappy.aspx&quot;&gt;Microsoft didn&amp;#39;t
+kill my pappy&lt;/a&gt;, not
+yet.&lt;/p&gt;
+
+&lt;p&gt;You can grab source codes
+of &lt;a href=&quot;http://www.computerhistory.org/_static/atchm/microsoft-ms-dos-early-source-code/&quot;&gt;MS-DOS&lt;/a&gt;
+and &lt;a href=&quot;http://www.computerhistory.org/_static/atchm/microsoft-word-for-windows-1-1a-source-code/&quot;&gt;Word for
+Windows&lt;/a&gt;
+from the Computer History Museum&amp;#39;s website.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>The Good Enough Software Design</title>
+   <link href="http://www.thingstocode.com/2014/03/good-enough-software-design/"/>
+   <updated>2014-03-09T00:00:00+02:00</updated>
+   <id>http://www.thingstocode.com/2014/03/good-enough-software-design</id>
+   <content type="html">&lt;p&gt;Designing software is a challenge, especially for a perfectionist programmer.
+There are tons of decisions to make and lots of problems with many solutions.
+It is very likely that some of them will be hard. You can find yourself
+searching best practices online, and asking questions at
+&lt;a href=&quot;http://www.stackoverflow.com&quot;&gt;stackoverflow.com&lt;/a&gt;. Even if you find practices
+and you get the answers you want, it is quite possible that you will end up
+with a design that you are not satisfied with. You doubt whether it is a
+perfect design or not. Guess what, there is no perfect design!&lt;/p&gt;
+
+&lt;h2&gt;Mount of Design&lt;/h2&gt;
+
+&lt;p&gt;It is impossible to solve the design puzzle as a whole. Every requirement will
+pop up in your brain and you will see the biggest challenges in the design like
+the choices about the data or the presentation layer. Do I need to use MVC or
+MVVM? Which ORM tool do I need to use? How am I supposed to handle multiple
+database connections? Every question will make you feel more overwhelmed and
+you will start to see the design as an ever growing mountain. Every step you
+take will seem worthless to the giant mountain in front of you. Feeling
+overwhelmed can make you want to escape from the problem and the
+procrastination problem begins. But procrastination won&amp;#39;t lead you to the
+solution.&lt;/p&gt;
+
+&lt;p&gt;The simplest solution to this problem is to &lt;a href=&quot;http://en.wikipedia.org/wiki/Divide_and_rule&quot;&gt;Divide &amp;amp;
+Conquer&lt;/a&gt;. You have to stop
+thinking about the entire system in your head. You should divide the design
+into smaller blocks and see what you can do to those simple blocks one by one.
+If possible, choose an iterative development approach like
+&lt;a href=&quot;http://en.wikipedia.org/wiki/Extreme_programming&quot;&gt;XP&lt;/a&gt;. This way you can focus
+design obstacles iteratively and then you will start to see multiple small
+hills in your head.&lt;/p&gt;
+
+&lt;p&gt;Also don&amp;#39;t spend too much time on choosing tools or APIs to use like a database
+or a rule engine. These are just tools to make our lives easier. You should
+spend more time on general design principles like &lt;a href=&quot;http://en.wikipedia.org/wiki/Separation_of_concerns&quot;&gt;Separation of
+Concerns&lt;/a&gt;. For example SoC
+will allow you to change any layer or any tool in your software without
+affecting the others. Apply
+&lt;a href=&quot;http://en.wikipedia.org/wiki/Test-driven_development&quot;&gt;TDD&lt;/a&gt;, it will pump up
+your courage and let you make radical changes in your software.&lt;/p&gt;
+
+&lt;p&gt;Don&amp;#39;t forget; the time spent on design is never enough. As Steve McConnell said
+in his masterpiece, &lt;a href=&quot;http://www.amazon.com/gp/product/0735619670/ref=as_li_ss_tl?ie=UTF8&amp;amp;amp;camp=1789&amp;amp;amp;creative=390957&amp;amp;amp;creativeASIN=0735619670&amp;amp;amp;linkCode=as2&amp;amp;amp;tag=thin0f5-20&quot;&gt;Code
+Complete&lt;/a&gt;,&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;When are you done [designing]? Since design is open-ended, the most common
+answer to that question is “When you&amp;#39;re out of time.&amp;quot;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2&gt;Requirements Change&lt;/h2&gt;
+
+&lt;p&gt;Your client or your company has to adapt changes in the business to survive.
+This means that requirements will change. You can&amp;#39;t write a software to cover
+all the possible requirements that could come up in the future. There will
+always be some requirements that didn&amp;#39;t even pop up in your brain. So don&amp;#39;t try
+to cover future requirements because &lt;a href=&quot;http://en.wikipedia.org/wiki/You_aren&quot;&gt;You Aren&amp;#39;t Gonna Need
+It&lt;/a&gt;. It is like reserving and decorating
+a room for a baby when you aren&amp;#39;t even expecting one. Try to write a software
+that covers the current requirements.&lt;/p&gt;
+
+&lt;h2&gt;Don&amp;#39;t Overengineer&lt;/h2&gt;
+
+&lt;p&gt;If you work on a specific feature for days that will reduce the work of your
+client just 5 minutes in a year, then your work is actually useless. I know
+sometimes we can&amp;#39;t stop ourselves making that particular change, because it
+might feel us like a better programmer or we might do it just for fun, but you
+need to consider the cost/benefit ratio. Your time is precious, spend your time
+on something better.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://xkcd.com/974&quot;&gt;&lt;img src=&quot;http://imgs.xkcd.com/comics/the_general_problem.png&quot; alt=&quot;Overengineering problem&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2&gt;Simplify&lt;/h2&gt;
+
+&lt;p&gt;When you just need to store the state of an object into the file system, no
+time-intensive job or anything special, it is pointless to write a custom
+object serializer. I saw some designs that look like masterpieces from an
+engineering point of view, but they made everything overcomplicated. It takes
+weeks for newcomers to adapt to the system. You shouldn&amp;#39;t make your design
+overcomplicated. Sometimes the best solution is the simplest one. So keep in
+mind the &lt;a href=&quot;http://en.wikipedia.org/wiki/KISS_principle&quot;&gt;KISS principle&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2&gt;Courage&lt;/h2&gt;
+
+&lt;p&gt;The design actually is the outcome of the programmer&amp;#39;s experience. It is quite
+likely that different programmers can come up with different design ideas. This
+might result in you searching for the best possible way to design a feature
+since there is no single solution to a design problem. Don&amp;#39;t do that. It
+doesn&amp;#39;t mean you should stop learning, listening or reading other people&amp;#39;s
+ideas, of course you should. But design phase is not the time to learn all the
+best practices in the world that could possibly be applied to your problem.
+Have some courage, do your best design and start implementing your design
+ideas.&lt;/p&gt;
+
+&lt;p&gt;In the design, you might give a class more responsibility than it should have,
+or you might not see the inheritance relationship between two classes, or you
+might miss a clearly visible pattern. When you start coding, you will see some
+similar flaws in your design.
+&lt;a href=&quot;http://en.wikipedia.org/wiki/Code_refactoring&quot;&gt;Refactoring&lt;/a&gt; is a really good
+practice to make your design better. Don&amp;#39;t try to make a perfect design, start
+coding and refactor when your &lt;a href=&quot;http://en.wikipedia.org/wiki/Code_smell&quot;&gt;code
+smells&lt;/a&gt;. You will learn from your
+mistakes and they will be helpful for your future designs.&lt;/p&gt;
+
+&lt;h2&gt;No Perfect Sofware&lt;/h2&gt;
+
+&lt;p&gt;Whatever you do you will end up with a piece of software that won&amp;#39;t satisfy
+you. As Hunt and Thomas wrote in &lt;a href=&quot;http://www.amazon.com/gp/product/020161622X/ref=as_li_ss_tl?ie=UTF8&amp;amp;amp;camp=1789&amp;amp;amp;creative=390957&amp;amp;amp;creativeASIN=020161622X&amp;amp;amp;linkCode=as2&amp;amp;amp;tag=thin0f5-20&quot;&gt;The Pragmatic
+Programmer&lt;/a&gt;;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;... perfect software doesn&amp;#39;t exist. No one in the brief history of computing
+has ever written a piece of perfect software. It&amp;#39;s unlikely that you&amp;#39;ll be
+the first. And unless you accept this as a fact, you&amp;#39;ll end up wasting time
+and energy chasing an impossible dream.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;I&amp;#39;m sorry, but they are right. Instead of chasing an impossible dream, try to
+make your design &amp;quot;good enough&amp;quot; and start coding!&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Developing Hadoop Projects in Eclipse</title>
+   <link href="http://www.thingstocode.com/2014/01/developing-hadoop-projects-in-eclipse/"/>
+   <updated>2014-01-31T00:00:00+02:00</updated>
+   <id>http://www.thingstocode.com/2014/01/developing-hadoop-projects-in-eclipse</id>
+   <content type="html">&lt;p&gt;I’ve started learning the &lt;a href=&quot;http://hadoop.apache.org/&quot;&gt;Apache Hadoop&lt;/a&gt; platform
+recently with a great book; &lt;a href=&quot;http://www.amazon.com/gp/product/1449311520/ref=as_li_ss_tl?ie=UTF8&amp;amp;camp=1789&amp;amp;creative=390957&amp;amp;creativeASIN=1449311520&amp;amp;linkCode=as2&amp;amp;tag=thin0f5-20&quot;&gt;Hadoop: The Definitive
+Guide&lt;/a&gt;.
+I had written some examples in terminal, but the projects were getting bigger
+and bigger. Eventually, I decided to switch to an IDE and started using
+Eclipse. Below I will explain two different ways to start your Hadoop Eclipse
+project in standalone mode.&lt;/p&gt;
+
+&lt;h2&gt;Importing Libraries&lt;/h2&gt;
+
+&lt;p&gt;Create a new project and add these libraries as a reference to your project.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;commons-configuration-1.6.jar&lt;/li&gt;
+&lt;li&gt;commons-httpclient-3.0.1.jar&lt;/li&gt;
+&lt;li&gt;commons-lang-2.4.jar&lt;/li&gt;
+&lt;li&gt;commons-logging-1.1.1.jar&lt;/li&gt;
+&lt;li&gt;hadoop-core-1.0.0.jar&lt;/li&gt;
+&lt;li&gt;jackson-core-asl-1.0.1.jar&lt;/li&gt;
+&lt;li&gt;jackson-mapper-asl-1.0.1.jar&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Add your source folder and you are ready to start your MapReduce application!&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2014/02/hadoop-project.png&quot; alt=&quot;Hadoop project&quot;&gt;&lt;/p&gt;
+
+&lt;h2&gt;Using Maven&lt;/h2&gt;
+
+&lt;p&gt;First you need to create a pom.xml file. You can get it from my repository on
+github.&lt;/p&gt;
+
+&lt;p&gt;After getting the pom.xml, you can create your Eclipse project with the
+following command.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;mvn eclipse:eclipse&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Alternatively you can start a Java project in Eclipse, add pom.xml file to your
+project, right click your pom.xml and select Run as &amp;gt; Maven Build. Then you
+should write eclipse:eclipse to the Goals section and hit Run.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2014/02/hadoop-maven-build.png&quot; alt=&quot;Hadoop maven build&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;After the build is completed, right click on your project and Refresh your
+project. You should see the added libraries in the Referenced Libraries
+section.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2014/02/hadoop-maven-build.png&quot; alt=&quot;Hadoop project maven&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;Now, you can run your application.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Hello world!</title>
+   <link href="http://www.thingstocode.com/2014/01/hello-world/"/>
+   <updated>2014-01-30T00:00:00+02:00</updated>
+   <id>http://www.thingstocode.com/2014/01/hello-world</id>
+   <content type="html">&lt;p&gt;And the blogging began...&lt;/p&gt;
+</content>
+ </entry>
+ 
+
+</feed>

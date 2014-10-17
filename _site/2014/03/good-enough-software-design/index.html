@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      The Good Enough Software Design &middot; Things to Code
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/lanyon.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-precomposed.png">
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+
+  
+  <meta name="description" content="Software design is a challenge&#58; hard architectural decisions, change of requirements, lots of tools to use, lack of time. Is perfect design possible?" />
+  
+  <script src="/assets/jquery-1.11.1.min.js"></script>
+  <script>
+    $( document ).ready(function() {
+      $('img').parents('p').attr('align', 'center');
+    });
+  </script>
+</head>
+
+
+  <body>
+
+    <!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+     styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p></p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item" href="/">Home</a>
+
+    
+
+    
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/about.html">About</a>
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/archive.html">Archive</a>
+        
+      
+    
+      
+    
+      
+        
+      
+    
+
+  </nav>
+
+  <div class="sidebar-item">
+    <p>
+      &copy; 2014. All rights reserved.
+    </p>
+  </div>
+</div>
+
+
+    <!-- Wrap is the content to shift when toggling the sidebar. We wrap the
+         content to avoid any CSS collisions with our real content. -->
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="/" title="Home">Things to Code</a>
+            <small></small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+        <div class="post">
+  <h1 class="post-title">The Good Enough Software Design</h1>
+  <span class="post-date">09 Mar 2014</span>
+  <p>Designing software is a challenge, especially for a perfectionist programmer.
+There are tons of decisions to make and lots of problems with many solutions.
+It is very likely that some of them will be hard. You can find yourself
+searching best practices online, and asking questions at
+<a href="http://www.stackoverflow.com">stackoverflow.com</a>. Even if you find practices
+and you get the answers you want, it is quite possible that you will end up
+with a design that you are not satisfied with. You doubt whether it is a
+perfect design or not. Guess what, there is no perfect design!</p>
+
+<h2>Mount of Design</h2>
+
+<p>It is impossible to solve the design puzzle as a whole. Every requirement will
+pop up in your brain and you will see the biggest challenges in the design like
+the choices about the data or the presentation layer. Do I need to use MVC or
+MVVM? Which ORM tool do I need to use? How am I supposed to handle multiple
+database connections? Every question will make you feel more overwhelmed and
+you will start to see the design as an ever growing mountain. Every step you
+take will seem worthless to the giant mountain in front of you. Feeling
+overwhelmed can make you want to escape from the problem and the
+procrastination problem begins. But procrastination won&#39;t lead you to the
+solution.</p>
+
+<p>The simplest solution to this problem is to <a href="http://en.wikipedia.org/wiki/Divide_and_rule">Divide &amp;
+Conquer</a>. You have to stop
+thinking about the entire system in your head. You should divide the design
+into smaller blocks and see what you can do to those simple blocks one by one.
+If possible, choose an iterative development approach like
+<a href="http://en.wikipedia.org/wiki/Extreme_programming">XP</a>. This way you can focus
+design obstacles iteratively and then you will start to see multiple small
+hills in your head.</p>
+
+<p>Also don&#39;t spend too much time on choosing tools or APIs to use like a database
+or a rule engine. These are just tools to make our lives easier. You should
+spend more time on general design principles like <a href="http://en.wikipedia.org/wiki/Separation_of_concerns">Separation of
+Concerns</a>. For example SoC
+will allow you to change any layer or any tool in your software without
+affecting the others. Apply
+<a href="http://en.wikipedia.org/wiki/Test-driven_development">TDD</a>, it will pump up
+your courage and let you make radical changes in your software.</p>
+
+<p>Don&#39;t forget; the time spent on design is never enough. As Steve McConnell said
+in his masterpiece, <a href="http://www.amazon.com/gp/product/0735619670/ref=as_li_ss_tl?ie=UTF8&amp;amp;camp=1789&amp;amp;creative=390957&amp;amp;creativeASIN=0735619670&amp;amp;linkCode=as2&amp;amp;tag=thin0f5-20">Code
+Complete</a>,</p>
+
+<blockquote>
+<p>When are you done [designing]? Since design is open-ended, the most common
+answer to that question is “When you&#39;re out of time.&quot;</p>
+</blockquote>
+
+<h2>Requirements Change</h2>
+
+<p>Your client or your company has to adapt changes in the business to survive.
+This means that requirements will change. You can&#39;t write a software to cover
+all the possible requirements that could come up in the future. There will
+always be some requirements that didn&#39;t even pop up in your brain. So don&#39;t try
+to cover future requirements because <a href="http://en.wikipedia.org/wiki/You_aren">You Aren&#39;t Gonna Need
+It</a>. It is like reserving and decorating
+a room for a baby when you aren&#39;t even expecting one. Try to write a software
+that covers the current requirements.</p>
+
+<h2>Don&#39;t Overengineer</h2>
+
+<p>If you work on a specific feature for days that will reduce the work of your
+client just 5 minutes in a year, then your work is actually useless. I know
+sometimes we can&#39;t stop ourselves making that particular change, because it
+might feel us like a better programmer or we might do it just for fun, but you
+need to consider the cost/benefit ratio. Your time is precious, spend your time
+on something better.</p>
+
+<p><a href="https://xkcd.com/974"><img src="http://imgs.xkcd.com/comics/the_general_problem.png" alt="Overengineering problem"></a></p>
+
+<h2>Simplify</h2>
+
+<p>When you just need to store the state of an object into the file system, no
+time-intensive job or anything special, it is pointless to write a custom
+object serializer. I saw some designs that look like masterpieces from an
+engineering point of view, but they made everything overcomplicated. It takes
+weeks for newcomers to adapt to the system. You shouldn&#39;t make your design
+overcomplicated. Sometimes the best solution is the simplest one. So keep in
+mind the <a href="http://en.wikipedia.org/wiki/KISS_principle">KISS principle</a>.</p>
+
+<h2>Courage</h2>
+
+<p>The design actually is the outcome of the programmer&#39;s experience. It is quite
+likely that different programmers can come up with different design ideas. This
+might result in you searching for the best possible way to design a feature
+since there is no single solution to a design problem. Don&#39;t do that. It
+doesn&#39;t mean you should stop learning, listening or reading other people&#39;s
+ideas, of course you should. But design phase is not the time to learn all the
+best practices in the world that could possibly be applied to your problem.
+Have some courage, do your best design and start implementing your design
+ideas.</p>
+
+<p>In the design, you might give a class more responsibility than it should have,
+or you might not see the inheritance relationship between two classes, or you
+might miss a clearly visible pattern. When you start coding, you will see some
+similar flaws in your design.
+<a href="http://en.wikipedia.org/wiki/Code_refactoring">Refactoring</a> is a really good
+practice to make your design better. Don&#39;t try to make a perfect design, start
+coding and refactor when your <a href="http://en.wikipedia.org/wiki/Code_smell">code
+smells</a>. You will learn from your
+mistakes and they will be helpful for your future designs.</p>
+
+<h2>No Perfect Sofware</h2>
+
+<p>Whatever you do you will end up with a piece of software that won&#39;t satisfy
+you. As Hunt and Thomas wrote in <a href="http://www.amazon.com/gp/product/020161622X/ref=as_li_ss_tl?ie=UTF8&amp;amp;camp=1789&amp;amp;creative=390957&amp;amp;creativeASIN=020161622X&amp;amp;linkCode=as2&amp;amp;tag=thin0f5-20">The Pragmatic
+Programmer</a>;</p>
+
+<blockquote>
+<p>... perfect software doesn&#39;t exist. No one in the brief history of computing
+has ever written a piece of perfect software. It&#39;s unlikely that you&#39;ll be
+the first. And unless you accept this as a fact, you&#39;ll end up wasting time
+and energy chasing an impossible dream.</p>
+</blockquote>
+
+<p>I&#39;m sorry, but they are right. Instead of chasing an impossible dream, try to
+make your design &quot;good enough&quot; and start coding!</p>
+
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2014/06/null-object-pattern/">
+            Null Object Pattern
+            <small>10 Jun 2014</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2014/03/source-code-ms-dos-word-windows/">
+            Source Code for MS-DOS and Word for Windows
+            <small>30 Mar 2014</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2014/01/developing-hadoop-projects-in-eclipse/">
+            Developing Hadoop Projects in Eclipse
+            <small>31 Jan 2014</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
+</div>
+
+
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'thingstocode';
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+    <script>
+      (function(document) {
+        var toggle = document.querySelector('.sidebar-toggle');
+        var sidebar = document.querySelector('#sidebar');
+        var checkbox = document.querySelector('#sidebar-checkbox');
+
+        document.addEventListener('click', function(e) {
+          var target = e.target;
+
+          if(!checkbox.checked ||
+             sidebar.contains(target) ||
+             (target === checkbox || target === toggle)) return;
+
+          checkbox.checked = false;
+        }, false);
+      })(document);
+    </script>
+
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-47719261-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,37 @@
+<p>I’ve started learning the <a href="http://hadoop.apache.org/">Apache Hadoop</a> platform recently with a great book; <a href="http://www.amazon.com/gp/product/1449311520/ref=as_li_ss_tl?ie=UTF8&amp;camp=1789&amp;creative=390957&amp;creativeASIN=1449311520&amp;linkCode=as2&amp;tag=thin0f5-20">Hadoop: The Definitive Guide</a>. I had written some examples in terminal, but the projects were getting bigger and bigger. Eventually, I decided to switch to an IDE and started using Eclipse. Below I will explain two different ways to start your Hadoop Eclipse project in standalone mode.</p>
+
+<h2 id="importing-libraries">Importing Libraries</h2>
+
+<p>Create a new project and add these libraries as a reference to your project.</p>
+
+<ul>
+  <li>commons-configuration-1.6.jar</li>
+  <li>commons-httpclient-3.0.1.jar</li>
+  <li>commons-lang-2.4.jar</li>
+  <li>commons-logging-1.1.1.jar</li>
+  <li>hadoop-core-1.0.0.jar</li>
+  <li>jackson-core-asl-1.0.1.jar</li>
+  <li>jackson-mapper-asl-1.0.1.jar</li>
+</ul>
+
+<p>Add your source folder and you are ready to start your MapReduce application!</p>
+
+<p><img src="/assets/2014/02/hadoop-project.png" alt="Hadoop project" /></p>
+
+<h2 id="using-maven">Using Maven</h2>
+
+<p>First you need to create a pom.xml file. You can get it from my repository on github.</p>
+
+<p>After getting the pom.xml, you can create your Eclipse project with the following command.</p>
+
+<p><code>mvn eclipse:eclipse</code></p>
+
+<p>Alternatively you can start a Java project in Eclipse, add pom.xml file to your project, right click your pom.xml and select Run as &gt; Maven Build. Then you should write eclipse:eclipse to the Goals section and hit Run.</p>
+
+<p><img src="/assets/2014/02/hadoop-maven-build.png" alt="Hadoop maven build" /></p>
+
+<p>After the build is completed, right click on your project and Refresh your project. You should see the added libraries in the Referenced Libraries section.</p>
+
+<p><img src="/assets/2014/02/hadoop-maven-build.png" alt="Hadoop project maven" /></p>
+
+<p>Now, you can run your application.</p>

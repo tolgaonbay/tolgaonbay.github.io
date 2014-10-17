@@ -1,0 +1,24 @@
+# Dependencies
+markdown:         redcarpet
+highlighter:      pygments
+
+# Permalinks
+permalink:        /:year/:month/:title/
+
+# Setup
+title:            Things to Code
+tagline:          ''
+description:      ''
+url:              http://www.thingstocode.com
+baseurl:          '/'
+paginate:         5
+
+author:
+  name:           'Tolga Onbay'
+  url:            https://twitter.com/tolgaonbay
+
+# Custom vars
+version:          1.0.0
+
+github:
+  repo:           https://github.com/poole/lanyon
