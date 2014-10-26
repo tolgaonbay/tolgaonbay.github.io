@@ -3,6 +3,8 @@ layout: post
 title: Null Object Pattern
 description: Null Object Pattern is actually a special form of Special Case pattern. It gives a null meaning to your object and prevents getting null reference error
 keywords: null object pattern
+categories: [design, software]
+tags: [design patterns]
 ---
 
 A couple of months ago I needed to write a logging mechanism where logs weren't

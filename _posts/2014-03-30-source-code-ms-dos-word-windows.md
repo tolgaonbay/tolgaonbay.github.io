@@ -3,6 +3,8 @@ layout: post
 title: Source Code for MS-DOS and Word for Windows
 description: Microsoft released source code for MS-DOS and Word for Windows this week with the Computer History Museum
 keywords: source code for ms-dos and word for windows
+categories: [software]
+tags: [microsoft, open source]
 ---
 [Microsoft released source code for MS-DOS and Word for
 Windows](http://blogs.technet.com/b/microsoft_blog/archive/2014/03/25/microsoft-makes-source-code-for-ms-dos-and-word-for-windows-available-to-public.aspx) this

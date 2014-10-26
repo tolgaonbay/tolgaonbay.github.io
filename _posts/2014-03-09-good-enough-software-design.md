@@ -2,6 +2,8 @@
 layout: post
 title: The Good Enough Software Design
 description: Software design is a challenge&#58; hard architectural decisions, change of requirements, lots of tools to use, lack of time. Is perfect design possible?
+categories: [design, software]
+tags: [design, programming]
 ---
 Designing software is a challenge, especially for a perfectionist programmer.
 There are tons of decisions to make and lots of problems with many solutions.

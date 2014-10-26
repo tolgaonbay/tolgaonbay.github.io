@@ -1,6 +1,8 @@
 ---
 layout: post
 title: Developing Hadoop Projects in Eclipse
+categories: [big data]
+tags: [hadoop]
 ---
 
 I’ve started learning the [Apache Hadoop](http://hadoop.apache.org/) platform
