@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
  <title>Things to Code</title>
- <link href="http://www.thingstocode.com/atom.xml" rel="self"/>
- <link href="http://www.thingstocode.com/"/>
- <updated>2014-11-03T21:14:23+02:00</updated>
- <id>http://www.thingstocode.com</id>
+ <link href="http://localhost:4000/atom.xml" rel="self"/>
+ <link href="http://localhost:4000/"/>
+ <updated>2018-06-02T00:47:45+03:00</updated>
+ <id>http://localhost:4000</id>
  <author>
    <name>Tolga Onbay</name>
    <email></email>
@@ -13,10 +13,56 @@
 
  
  <entry>
+   <title>Locale-Independent String Sorting in Java</title>
+   <link href="http://localhost:4000/2014/12/locale-independent-string-sorting-in-java/"/>
+   <updated>2014-12-15T00:00:00+02:00</updated>
+   <id>http://localhost:4000/2014/12/locale-independent-string-sorting-in-java</id>
+   <content type="html">&lt;p&gt;In Java programming language, &lt;code&gt;Arrays.sort&lt;/code&gt; or &lt;code&gt;Collections.sort&lt;/code&gt;
+methods from the Class Library are used to sort a list of strings. These
+methods use the &lt;code&gt;compareTo&lt;/code&gt; method of the &lt;code&gt;Comparable&lt;/code&gt; interface for
+objects. The standard &lt;code&gt;compareTo&lt;/code&gt; implementation of the String class uses
+ASCII codes of the characters, and this works great in English.&lt;/p&gt;
+
+&lt;p&gt;When you need to sort strings in languages other than English, or more commonly
+you need to write a software for global use, then you can use the
+&lt;a href=&quot;https://docs.oracle.com/javase/7/docs/api/java/text/Collator.html&quot;&gt;Collator&lt;/a&gt;
+class.&lt;/p&gt;
+
+&lt;p&gt;Below is the Turkish alphabet in order.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;abcçdefgğhıijklmnoöprsştuüvyz&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Let&amp;#39;s sort the characters of the alphabet with &lt;code&gt;Arrays.sort&lt;/code&gt; method.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;alphabet&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;abcçdefgğhıijklmnoöprsştuüvyz&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;split&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;Arrays&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;sort&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;alphabet&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;The result is not ordered in Turkish, as expected.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;abcdefghijklmnoprstuvyzçöüğış&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Let&amp;#39;s try the Collator class.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Arrays&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;sort&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;alphabet&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Collator&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getInstance&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Locale&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;forLanguageTag&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;tr&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)));&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This works just in Turkish unsurprisingly. When you need to make your code work
+in other languages too, you can use &lt;code&gt;getDefault&lt;/code&gt; instead of
+&lt;code&gt;forLanguageTag&lt;/code&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Arrays&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;sort&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;alphabet&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Collator&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getInstance&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Locale&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getDefault&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()));&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;I will write about internationalization in detail, but until then, have a look
+at &lt;a href=&quot;http://blog.codinghorror.com/whats-wrong-with-turkey/&quot;&gt;What&amp;#39;s wrong with
+Turkey?&lt;/a&gt; by Jeff Atwood&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
    <title>Null Object Pattern</title>
-   <link href="http://www.thingstocode.com/2014/06/null-object-pattern/"/>
+   <link href="http://localhost:4000/2014/06/null-object-pattern/"/>
    <updated>2014-06-10T00:00:00+03:00</updated>
-   <id>http://www.thingstocode.com/2014/06/null-object-pattern</id>
+   <id>http://localhost:4000/2014/06/null-object-pattern</id>
    <content type="html">&lt;p&gt;A couple of months ago I needed to write a logging mechanism where logs weren&amp;#39;t
 always necessary to be persisted and log objects had to be transferred between
 methods, so each method assigns some specific attributes of the log object
@@ -25,7 +71,7 @@ everybody can work on a state-of-the-art system like some lucky guys do!&lt;/p&
 
 &lt;p&gt;You can get a feeling of the log class below:&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AuditLog&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AuditLog&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
     &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
     &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
     &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
@@ -41,13 +87,13 @@ everybody can work on a state-of-the-art system like some lucky guys do!&lt;/p&
     &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;save&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
         &lt;span class=&quot;c1&quot;&gt;//Persist to database&lt;/span&gt;
     &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;Standard procedure is of course passing null reference to the methods when
 there is no need to log and afterwards checking if the object is not null, so
 you can invoke its methods without getting a null reference exception.&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;TransactionHandler&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;TransactionHandler&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
     &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;handle&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Transaction&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;transaction&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;AuditLog&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
         &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;log&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
             &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;setId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
@@ -58,7 +104,7 @@ you can invoke its methods without getting a null reference exception.&lt;/p&gt
         &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;log&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
             &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;save&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
     &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;If you are an Objective-C programmer, then you are lucky, you don&amp;#39;t need to
 worry about checking if the object is null. But if you are using a mainstream
@@ -81,11 +127,11 @@ will get a cleaner code.&lt;/p&gt;
 &lt;p&gt;Let&amp;#39;s get back to the design. We can transform the AuditLog class to use the
 Null Object pattern like below.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://www.thingstocode.com/assets/2014/04/nullobjectpattern.png&quot; alt=&quot;null object pattern&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://localhost:4000/assets/2014/04/nullobjectpattern.png&quot; alt=&quot;null object pattern&quot;&gt;&lt;/p&gt;
 
 &lt;p&gt;The code will simply be changed to:&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AuditLog&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AuditLog&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
     &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
     &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
     &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
@@ -124,12 +170,12 @@ Null Object pattern like below.&lt;/p&gt;
     &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;save&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
         &lt;span class=&quot;c1&quot;&gt;//Do nothing&lt;/span&gt;
     &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;Invoking the save method with a NullAuditLog instance will do nothing and you
 don&amp;#39;t need to add a null reference check anymore.&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;TransactionHandler&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;TransactionHandler&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
     &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;handle&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Transaction&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;transaction&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;AuditLog&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
         &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;setId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
         &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
@@ -138,7 +184,7 @@ don&amp;#39;t need to add a null reference check anymore.&lt;/p&gt;
     &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;AuditLog&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
         &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;save&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
     &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;Actually using an interface is the optimal usage. But in my design, I simply
 extended AuditLog class as NullAuditLog and made it a private static
@@ -175,9 +221,9 @@ find it very useful.&lt;/p&gt;
  
  <entry>
    <title>Source Code for MS-DOS and Word for Windows</title>
-   <link href="http://www.thingstocode.com/2014/03/source-code-ms-dos-word-windows/"/>
+   <link href="http://localhost:4000/2014/03/source-code-ms-dos-word-windows/"/>
    <updated>2014-03-30T00:00:00+02:00</updated>
-   <id>http://www.thingstocode.com/2014/03/source-code-ms-dos-word-windows</id>
+   <id>http://localhost:4000/2014/03/source-code-ms-dos-word-windows</id>
    <content type="html">&lt;p&gt;&lt;a href=&quot;http://blogs.technet.com/b/microsoft_blog/archive/2014/03/25/microsoft-makes-source-code-for-ms-dos-and-word-for-windows-available-to-public.aspx&quot;&gt;Microsoft released source code for MS-DOS and Word for
 Windows&lt;/a&gt; this
 week with the Computer History Museum.&lt;/p&gt;
@@ -219,9 +265,9 @@ from the Computer History Museum&amp;#39;s website.&lt;/p&gt;
  
  <entry>
    <title>The Good Enough Software Design</title>
-   <link href="http://www.thingstocode.com/2014/03/good-enough-software-design/"/>
+   <link href="http://localhost:4000/2014/03/good-enough-software-design/"/>
    <updated>2014-03-09T00:00:00+02:00</updated>
-   <id>http://www.thingstocode.com/2014/03/good-enough-software-design</id>
+   <id>http://localhost:4000/2014/03/good-enough-software-design</id>
    <content type="html">&lt;p&gt;Designing software is a challenge, especially for a perfectionist programmer.
 There are tons of decisions to make and lots of problems with many solutions.
 It is very likely that some of them will be hard. You can find yourself
@@ -263,7 +309,7 @@ affecting the others. Apply
 your courage and let you make radical changes in your software.&lt;/p&gt;
 
 &lt;p&gt;Don&amp;#39;t forget; the time spent on design is never enough. As Steve McConnell said
-in his masterpiece, &lt;a href=&quot;http://www.amazon.com/gp/product/0735619670/ref=as_li_ss_tl?ie=UTF8&amp;amp;amp;camp=1789&amp;amp;amp;creative=390957&amp;amp;amp;creativeASIN=0735619670&amp;amp;amp;linkCode=as2&amp;amp;amp;tag=thin0f5-20&quot;&gt;Code
+in his masterpiece, &lt;a href=&quot;http://www.amazon.com/gp/product/0735619670/ref=as_li_ss_tl?ie=UTF8&amp;amp;camp=1789&amp;amp;creative=390957&amp;amp;creativeASIN=0735619670&amp;amp;linkCode=as2&amp;amp;tag=thin0f5-20&quot;&gt;Code
 Complete&lt;/a&gt;,&lt;/p&gt;
 
 &lt;blockquote&gt;
@@ -328,7 +374,7 @@ mistakes and they will be helpful for your future designs.&lt;/p&gt;
 &lt;h2&gt;No Perfect Sofware&lt;/h2&gt;
 
 &lt;p&gt;Whatever you do you will end up with a piece of software that won&amp;#39;t satisfy
-you. As Hunt and Thomas wrote in &lt;a href=&quot;http://www.amazon.com/gp/product/020161622X/ref=as_li_ss_tl?ie=UTF8&amp;amp;amp;camp=1789&amp;amp;amp;creative=390957&amp;amp;amp;creativeASIN=020161622X&amp;amp;amp;linkCode=as2&amp;amp;amp;tag=thin0f5-20&quot;&gt;The Pragmatic
+you. As Hunt and Thomas wrote in &lt;a href=&quot;http://www.amazon.com/gp/product/020161622X/ref=as_li_ss_tl?ie=UTF8&amp;amp;camp=1789&amp;amp;creative=390957&amp;amp;creativeASIN=020161622X&amp;amp;linkCode=as2&amp;amp;tag=thin0f5-20&quot;&gt;The Pragmatic
 Programmer&lt;/a&gt;;&lt;/p&gt;
 
 &lt;blockquote&gt;
@@ -345,11 +391,11 @@ make your design &amp;quot;good enough&amp;quot; and start coding!&lt;/p&gt;
  
  <entry>
    <title>Developing Hadoop Projects in Eclipse</title>
-   <link href="http://www.thingstocode.com/2014/01/developing-hadoop-projects-in-eclipse/"/>
+   <link href="http://localhost:4000/2014/01/developing-hadoop-projects-in-eclipse/"/>
    <updated>2014-01-31T00:00:00+02:00</updated>
-   <id>http://www.thingstocode.com/2014/01/developing-hadoop-projects-in-eclipse</id>
+   <id>http://localhost:4000/2014/01/developing-hadoop-projects-in-eclipse</id>
    <content type="html">&lt;p&gt;I’ve started learning the &lt;a href=&quot;http://hadoop.apache.org/&quot;&gt;Apache Hadoop&lt;/a&gt; platform
-recently with a great book; &lt;a href=&quot;http://www.amazon.com/gp/product/1449311520/ref=as_li_ss_tl?ie=UTF8&amp;amp;camp=1789&amp;amp;creative=390957&amp;amp;creativeASIN=1449311520&amp;amp;linkCode=as2&amp;amp;tag=thin0f5-20&quot;&gt;Hadoop: The Definitive
+recently with a great book; &lt;a href=&quot;http://www.amazon.com/gp/product/1449311520/ref=as_li_ss_tl?ie=UTF8&amp;camp=1789&amp;creative=390957&amp;creativeASIN=1449311520&amp;linkCode=as2&amp;tag=thin0f5-20&quot;&gt;Hadoop: The Definitive
 Guide&lt;/a&gt;.
 I had written some examples in terminal, but the projects were getting bigger
 and bigger. Eventually, I decided to switch to an IDE and started using
@@ -402,9 +448,9 @@ section.&lt;/p&gt;
  
  <entry>
    <title>Hello world!</title>
-   <link href="http://www.thingstocode.com/2014/01/hello-world/"/>
+   <link href="http://localhost:4000/2014/01/hello-world/"/>
    <updated>2014-01-30T00:00:00+02:00</updated>
-   <id>http://www.thingstocode.com/2014/01/hello-world</id>
+   <id>http://localhost:4000/2014/01/hello-world</id>
    <content type="html">&lt;p&gt;And the blogging began...&lt;/p&gt;
 </content>
  </entry>

@@ -74,13 +74,17 @@
     
       
         
-          <a class="sidebar-nav-item" href="/about/index.html">About</a>
+          <a class="sidebar-nav-item" href="/archive/">Archive</a>
         
       
     
       
         
-          <a class="sidebar-nav-item" href="/archive/index.html">Archive</a>
+          <a class="sidebar-nav-item" href="/about/">About</a>
+        
+      
+    
+      
         
       
     
@@ -89,7 +93,7 @@
 
   <div class="sidebar-item">
     <p>
-      &copy; 2014. All rights reserved.
+      &copy; 2018. All rights reserved.
     </p>
   </div>
 </div>
@@ -119,7 +123,7 @@ everybody can work on a state-of-the-art system like some lucky guys do!</p>
 
 <p>You can get a feeling of the log class below:</p>
 
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">AuditLog</span> <span class="o">{</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">AuditLog</span> <span class="o">{</span>
     <span class="kd">private</span> <span class="n">String</span> <span class="n">id</span><span class="o">;</span>
     <span class="o">...</span>
     <span class="nd">@Override</span>
@@ -135,13 +139,13 @@ everybody can work on a state-of-the-art system like some lucky guys do!</p>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">save</span><span class="o">()</span> <span class="o">{</span>
         <span class="c1">//Persist to database</span>
     <span class="o">}</span>
-<span class="o">}</span></code></pre></div>
+<span class="o">}</span></code></pre></figure>
 
 <p>Standard procedure is of course passing null reference to the methods when
 there is no need to log and afterwards checking if the object is not null, so
 you can invoke its methods without getting a null reference exception.</p>
 
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">TransactionHandler</span> <span class="o">{</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">TransactionHandler</span> <span class="o">{</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">handle</span><span class="o">(</span><span class="n">Transaction</span> <span class="n">transaction</span><span class="o">,</span> <span class="n">AuditLog</span> <span class="n">log</span><span class="o">)</span> <span class="o">{</span>
         <span class="k">if</span> <span class="o">(</span><span class="n">log</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span>
             <span class="n">log</span><span class="o">.</span><span class="na">setId</span><span class="o">(</span><span class="n">id</span><span class="o">);</span>
@@ -152,7 +156,7 @@ you can invoke its methods without getting a null reference exception.</p>
         <span class="k">if</span> <span class="o">(</span><span class="n">log</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span>
             <span class="n">log</span><span class="o">.</span><span class="na">save</span><span class="o">();</span>
     <span class="o">}</span>
-<span class="o">}</span></code></pre></div>
+<span class="o">}</span></code></pre></figure>
 
 <p>If you are an Objective-C programmer, then you are lucky, you don&#39;t need to
 worry about checking if the object is null. But if you are using a mainstream
@@ -175,11 +179,11 @@ will get a cleaner code.</p>
 <p>Let&#39;s get back to the design. We can transform the AuditLog class to use the
 Null Object pattern like below.</p>
 
-<p><img src="http://www.thingstocode.com/assets/2014/04/nullobjectpattern.png" alt="null object pattern"></p>
+<p><img src="http://localhost:4000/assets/2014/04/nullobjectpattern.png" alt="null object pattern"></p>
 
 <p>The code will simply be changed to:</p>
 
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">AuditLog</span> <span class="o">{</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">AuditLog</span> <span class="o">{</span>
     <span class="kd">public</span> <span class="n">String</span> <span class="nf">getId</span><span class="o">();</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setId</span><span class="o">(</span><span class="n">String</span> <span class="n">id</span><span class="o">);</span>
     <span class="o">...</span>
@@ -218,12 +222,12 @@ Null Object pattern like below.</p>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">save</span><span class="o">()</span> <span class="o">{</span>
         <span class="c1">//Do nothing</span>
     <span class="o">}</span>
-<span class="o">}</span></code></pre></div>
+<span class="o">}</span></code></pre></figure>
 
 <p>Invoking the save method with a NullAuditLog instance will do nothing and you
 don&#39;t need to add a null reference check anymore.</p>
 
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">TransactionHandler</span> <span class="o">{</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">TransactionHandler</span> <span class="o">{</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">handle</span><span class="o">(</span><span class="n">Transaction</span> <span class="n">transaction</span><span class="o">,</span> <span class="n">AuditLog</span> <span class="n">log</span><span class="o">)</span> <span class="o">{</span>
         <span class="n">log</span><span class="o">.</span><span class="na">setId</span><span class="o">(</span><span class="n">id</span><span class="o">);</span>
         <span class="o">...</span>
@@ -232,7 +236,7 @@ don&#39;t need to add a null reference check anymore.</p>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">log</span><span class="o">(</span><span class="n">AuditLog</span> <span class="n">log</span><span class="o">)</span> <span class="o">{</span>
         <span class="n">log</span><span class="o">.</span><span class="na">save</span><span class="o">();</span>
     <span class="o">}</span>
-<span class="o">}</span></code></pre></div>
+<span class="o">}</span></code></pre></figure>
 
 <p>Actually using an interface is the optimal usage. But in my design, I simply
 extended AuditLog class as NullAuditLog and made it a private static
@@ -273,6 +277,15 @@ find it very useful.</p>
     
       <li>
         <h3>
+          <a href="/2014/12/locale-independent-string-sorting-in-java/">
+            Locale-Independent String Sorting in Java
+            <small>15 Dec 2014</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
           <a href="/2014/03/source-code-ms-dos-word-windows/">
             Source Code for MS-DOS and Word for Windows
             <small>30 Mar 2014</small>
@@ -285,15 +298,6 @@ find it very useful.</p>
           <a href="/2014/03/good-enough-software-design/">
             The Good Enough Software Design
             <small>09 Mar 2014</small>
-          </a>
-        </h3>
-      </li>
-    
-      <li>
-        <h3>
-          <a href="/2014/01/developing-hadoop-projects-in-eclipse/">
-            Developing Hadoop Projects in Eclipse
-            <small>31 Jan 2014</small>
           </a>
         </h3>
       </li>

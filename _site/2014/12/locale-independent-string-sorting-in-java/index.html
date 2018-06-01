@@ -11,7 +11,7 @@
 
   <title>
     
-      Source Code for MS-DOS and Word for Windows &middot; Things to Code
+      Locale-Independent String Sorting in Java &middot; Things to Code
     
   </title>
 
@@ -29,7 +29,7 @@
   <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
 
   
-  <meta name="description" content="Microsoft released source code for MS-DOS and Word for Windows this week with the Computer History Museum" />
+  <meta name="description" content="Locale-Independent String Sorting in Java" />
   
   <script src="/assets/jquery-1.11.1.min.js"></script>
   <script>
@@ -113,44 +113,46 @@
 
       <div class="container content">
         <div class="post">
-  <h1 class="post-title">Source Code for MS-DOS and Word for Windows</h1>
-  <span class="post-date">30 Mar 2014</span>
-  <p><a href="http://blogs.technet.com/b/microsoft_blog/archive/2014/03/25/microsoft-makes-source-code-for-ms-dos-and-word-for-windows-available-to-public.aspx">Microsoft released source code for MS-DOS and Word for
-Windows</a> this
-week with the Computer History Museum.</p>
+  <h1 class="post-title">Locale-Independent String Sorting in Java</h1>
+  <span class="post-date">15 Dec 2014</span>
+  <p>In Java programming language, <code>Arrays.sort</code> or <code>Collections.sort</code>
+methods from the Class Library are used to sort a list of strings. These
+methods use the <code>compareTo</code> method of the <code>Comparable</code> interface for
+objects. The standard <code>compareTo</code> implementation of the String class uses
+ASCII codes of the characters, and this works great in English.</p>
 
-<blockquote>
-<p>On Tuesday, we dusted off the source code for early versions of MS-DOS and
-Word for Windows. With the help of the Computer History Museum, we are making
-this code available to the public for the first time.</p>
-</blockquote>
+<p>When you need to sort strings in languages other than English, or more commonly
+you need to write a software for global use, then you can use the
+<a href="https://docs.oracle.com/javase/7/docs/api/java/text/Collator.html">Collator</a>
+class.</p>
 
-<p>Without reading the whole press release, you might think of it as Microsoft&#39;s
-new move towards getting into the open source community. Actually the intent is
-good, but it&#39;s not making them open source:</p>
+<p>Below is the Turkish alphabet in order.</p>
 
-<blockquote>
-<p>Thanks to the Computer History Museum, these important pieces of source code
-will be preserved and made available to the community for historical and
-technical scholarship.</p>
-</blockquote>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">abcçdefgğhıijklmnoöprsştuüvyz</span></code></pre></figure>
 
-<p>As I said the intent is good, but this effort might have been more meaningful
-maybe 15 years ago. People could have learned many things from their work and
-they could have used them in their fields. Who knows, maybe we would have had
-better word processors by now.</p>
+<p>Let&#39;s sort the characters of the alphabet with <code>Arrays.sort</code> method.</p>
 
-<p>Of course, this is about their marketing strategy, and I don&#39;t blame them for
-this. I don&#39;t really think they are evil. They have some <a href="http://www.microsoft.com/en-us/openness/">good
-efforts</a>. Besides <a href="http://www.hanselman.com/blog/MicrosoftKilledMyPappy.aspx">Microsoft didn&#39;t
-kill my pappy</a>, not
-yet.</p>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">String</span><span class="o">[]</span> <span class="n">alphabet</span> <span class="o">=</span> <span class="s">&quot;abcçdefgğhıijklmnoöprsştuüvyz&quot;</span><span class="o">.</span><span class="na">split</span><span class="o">(</span><span class="s">&quot;&quot;</span><span class="o">);</span>
 
-<p>You can grab source codes
-of <a href="http://www.computerhistory.org/_static/atchm/microsoft-ms-dos-early-source-code/">MS-DOS</a>
-and <a href="http://www.computerhistory.org/_static/atchm/microsoft-word-for-windows-1-1a-source-code/">Word for
-Windows</a>
-from the Computer History Museum&#39;s website.</p>
+<span class="n">Arrays</span><span class="o">.</span><span class="na">sort</span><span class="o">(</span><span class="n">alphabet</span><span class="o">);</span></code></pre></figure>
+
+<p>The result is not ordered in Turkish, as expected.</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">abcdefghijklmnoprstuvyzçöüğış</span></code></pre></figure>
+
+<p>Let&#39;s try the Collator class.</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">Arrays</span><span class="o">.</span><span class="na">sort</span><span class="o">(</span><span class="n">alphabet</span><span class="o">,</span> <span class="n">Collator</span><span class="o">.</span><span class="na">getInstance</span><span class="o">(</span><span class="n">Locale</span><span class="o">.</span><span class="na">forLanguageTag</span><span class="o">(</span><span class="s">&quot;tr&quot;</span><span class="o">)));</span></code></pre></figure>
+
+<p>This works just in Turkish unsurprisingly. When you need to make your code work
+in other languages too, you can use <code>getDefault</code> instead of
+<code>forLanguageTag</code>.</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">Arrays</span><span class="o">.</span><span class="na">sort</span><span class="o">(</span><span class="n">alphabet</span><span class="o">,</span> <span class="n">Collator</span><span class="o">.</span><span class="na">getInstance</span><span class="o">(</span><span class="n">Locale</span><span class="o">.</span><span class="na">getDefault</span><span class="o">()));</span></code></pre></figure>
+
+<p>I will write about internationalization in detail, but until then, have a look
+at <a href="http://blog.codinghorror.com/whats-wrong-with-turkey/">What&#39;s wrong with
+Turkey?</a> by Jeff Atwood</p>
 
 </div>
 
@@ -160,18 +162,18 @@ from the Computer History Museum&#39;s website.</p>
     
       <li>
         <h3>
-          <a href="/2014/12/locale-independent-string-sorting-in-java/">
-            Locale-Independent String Sorting in Java
-            <small>15 Dec 2014</small>
+          <a href="/2014/06/null-object-pattern/">
+            Null Object Pattern
+            <small>10 Jun 2014</small>
           </a>
         </h3>
       </li>
     
       <li>
         <h3>
-          <a href="/2014/06/null-object-pattern/">
-            Null Object Pattern
-            <small>10 Jun 2014</small>
+          <a href="/2014/03/source-code-ms-dos-word-windows/">
+            Source Code for MS-DOS and Word for Windows
+            <small>30 Mar 2014</small>
           </a>
         </h3>
       </li>

@@ -11,4 +11,4 @@ experienced, what I know and what I will find out in the IT field. In short,
 mostly blog posts will be about things to code.
 
 I love cycling, swimming, running, reading and lately writing, but mostly
-coding. Oh, I have a wonderful wife and a cute little baby girl.
+coding. Oh, I have a wonderful wife and two little baby girls.
